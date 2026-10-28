@@ -37,7 +37,7 @@ def generate_with_ollama(prompt: str) -> str:
     return answer
 
 # Function to answer a query
-def answer_query(query: str):
+def retrieve_records(query: str):
     query = query.strip()
     if not query:
         raise ValueError("query must not be empty")
@@ -47,11 +47,19 @@ def answer_query(query: str):
     query_embedding = get_embedder().encode(query, normalize_embeddings=True)
     scores = embeddings @ np.asarray(query_embedding, dtype=np.float32)
     selected = np.argsort(scores)[-settings.top_k :][::-1]
-    selected_records = [records[index] for index in selected]
-    context = "\n\n".join(
+    return [records[index] for index in selected]
+
+
+def build_context(records: list[dict]) -> str:
+    return "\n\n".join(
         f"Source: {record['source']}\n{record['text']}"
-        for record in selected_records
+        for record in records
     )
+
+
+def answer_query(query: str):
+    selected_records = retrieve_records(query)
+    context = build_context(selected_records)
     prompt = (
         "Answer the question using only the context below. "
         "If the context does not contain the answer, say you do not know.\n\n"

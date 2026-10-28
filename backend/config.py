@@ -23,7 +23,7 @@ def get_settings(validate_external: bool = True) -> Settings:
         embedding_model=os.getenv(
             "EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
         ),
-        generation_model=os.getenv("GENERATION_MODEL", "qwen2.5:1.5b"),
+        generation_model=os.getenv("GENERATION_MODEL", "llama3.2:3b"),
         ollama_url=os.getenv("OLLAMA_URL", "http://localhost:11434"),
         index_directory=Path(os.getenv("INDEX_DIRECTORY", "data/index")),
         top_k=int(os.getenv("TOP_K", "4")),
